@@ -13,7 +13,7 @@ type RoomsRepository interface {
 }
 
 type Room struct {
-	Id        int    `json:"uer_id,omitempty"`
+	Id        int    `json:"room_id,omitempty"`
 	Name      string `json:"name"`
 	IsPrivate bool   `json:"private"`
 }
@@ -50,7 +50,7 @@ func (db *roomDB) CreateRoom(r Room) (int, error) {
 	sqlInsert := `
 	INSERT INTO room (name, private)
 	VALUES ($1, $2)
-	RETURNING id`
+	RETURNING room_id`
 
 	row := db.QueryRow(sqlInsert, r.Name, r.IsPrivate)
 	err := row.Scan(&id)

@@ -13,7 +13,7 @@ type UsersRepository interface {
 }
 
 type User struct {
-	Id   int    `json:"uer_id,omitempty"`
+	Id   int    `json:"user_id,omitempty"`
 	Name string `json:"name"`
 }
 
@@ -49,7 +49,7 @@ func (db *userDB) CreateUser(u User) (int, error) {
 	sqlInsert := `
 	INSERT INTO users (name)
 	VALUES ($1)
-	RETURNING id`
+	RETURNING user_id`
 
 	row := db.QueryRow(sqlInsert, u.Name)
 	err := row.Scan(&id)
