@@ -2,6 +2,8 @@ package models
 
 import (
 	"database/sql"
+
+	_ "github.com/lib/pq"
 )
 
 type UsersRepository interface {
@@ -17,11 +19,11 @@ type User struct {
 	Name string `json:"name"`
 }
 
-type userDB struct {
+type UserDB struct {
 	*sql.DB
 }
 
-func (db *userDB) AllUsers() ([]*User, error) {
+func (db *UserDB) AllUsers() ([]*User, error) {
 	rows, err := db.Query("select user_id, name from users")
 	if err != nil {
 		return nil, err
@@ -43,7 +45,7 @@ func (db *userDB) AllUsers() ([]*User, error) {
 	return users, nil
 }
 
-func (db *userDB) CreateUser(u User) (int, error) {
+func (db *UserDB) CreateUser(u User) (int, error) {
 	var id int
 
 	sqlInsert := `
@@ -61,7 +63,7 @@ func (db *userDB) CreateUser(u User) (int, error) {
 	return id, nil
 }
 
-func (db *userDB) UserById(id int) (*User, error) {
+func (db *UserDB) UserById(id int) (*User, error) {
 	query := `select user_id, name from users where user.user_id = $1`
 
 	row := db.QueryRow(query, id)
@@ -75,7 +77,7 @@ func (db *userDB) UserById(id int) (*User, error) {
 	return user, nil
 }
 
-func (db *userDB) UpdateUser(u User) error {
+func (db *UserDB) UpdateUser(u User) error {
 	sqlUpdate := `UPDATE users SET name=$1 WHERE id=$2`
 
 	_, err :=
@@ -85,7 +87,7 @@ func (db *userDB) UpdateUser(u User) error {
 	return err
 }
 
-func (db *userDB) DeleteUser(id int) error {
+func (db *UserDB) DeleteUser(id int) error {
 	_, err := db.Exec("DELETE FROM user WHERE id=$1", id)
 
 	return err

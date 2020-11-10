@@ -3,6 +3,7 @@ package main
 import (
 	"flag"
 	"fmt"
+	"net/http"
 	"os"
 
 	"github.com/oleksandr-pol/messenger/internal/env"
@@ -25,9 +26,16 @@ func main() {
 	flag.StringVar(&dbPass, "dbPass", utils.GetDefaultStringVal(os.Getenv("DB_PASS"), "empty"), "no default value")
 	flag.Parse()
 	dbConf := env.DbConfig{DbHostName: dbHost, DbHostPort: dbPort, DbUserName: dbUserName, DbPassword: dbPass, DbName: dbName}
-	_, err := env.NewDb(dbConf)
-
+	db, err := env.NewDbCon(dbConf)
 	if err != nil {
 		fmt.Println(err.Error())
 	}
+
+	router, setUpErr := env.SetUpServer(db)
+	if setUpErr != nil {
+		fmt.Println(err.Error())
+	}
+
+	fmt.Printf("Listing for requests at http://localhost:%d", port)
+	http.ListenAndServe(fmt.Sprintf(":%d", port), router)
 }
