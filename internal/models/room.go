@@ -18,11 +18,11 @@ type Room struct {
 	IsPrivate bool   `json:"private"`
 }
 
-type roomDB struct {
+type RoomDB struct {
 	*sql.DB
 }
 
-func (db *roomDB) AllRooms() ([]*Room, error) {
+func (db *RoomDB) AllRooms() ([]*Room, error) {
 	rows, err := db.Query("select room_id, name, private from room")
 	if err != nil {
 		return nil, err
@@ -44,7 +44,7 @@ func (db *roomDB) AllRooms() ([]*Room, error) {
 	return rooms, nil
 }
 
-func (db *roomDB) CreateRoom(r Room) (int, error) {
+func (db *RoomDB) CreateRoom(r Room) (int, error) {
 	var id int
 
 	sqlInsert := `
@@ -62,7 +62,7 @@ func (db *roomDB) CreateRoom(r Room) (int, error) {
 	return id, nil
 }
 
-func (db *roomDB) RoomById(id int) (*Room, error) {
+func (db *RoomDB) RoomById(id int) (*Room, error) {
 	query := `select room_id, name, private from room where room.room_id = $1`
 
 	row := db.QueryRow(query, id)
@@ -76,7 +76,7 @@ func (db *roomDB) RoomById(id int) (*Room, error) {
 	return room, nil
 }
 
-func (db *roomDB) UpdateRoom(r Room) error {
+func (db *RoomDB) UpdateRoom(r Room) error {
 	sqlUpdate := `UPDATE room SET name=$1, private=$2 WHERE id=$3`
 
 	_, err :=
@@ -86,7 +86,7 @@ func (db *roomDB) UpdateRoom(r Room) error {
 	return err
 }
 
-func (db *roomDB) DeleteRoom(id int) error {
+func (db *RoomDB) DeleteRoom(id int) error {
 	_, err := db.Exec("DELETE FROM room WHERE id=$1", id)
 
 	return err

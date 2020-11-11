@@ -12,8 +12,10 @@ import (
 func SetUpServer(db *sql.DB) (*mux.Router, error) {
 	router := mux.NewRouter()
 	userDB := &models.UserDB{db}
+	roomDB := &models.RoomDB{db}
 
 	routes.User(router, userDB)
+	routes.Room(router, roomDB)
 
 	return router, nil
 }
