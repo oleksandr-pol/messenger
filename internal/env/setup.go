@@ -15,7 +15,7 @@ func SetUpServer(db *sql.DB) (*mux.Router, error) {
 	roomDB := &models.RoomDB{db}
 	participantDB := &models.ParticipantDB{db}
 
-	routes.User(router, userDB)
+	routes.User(router, userDB, roomDB)
 	routes.Room(router, roomDB)
 	routes.Participant(router, participantDB)
 

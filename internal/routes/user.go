@@ -8,6 +8,7 @@ import (
 	"github.com/oleksandr-pol/messenger/internal/models"
 )
 
-func User(r *mux.Router, db models.UsersRepository) {
-	r.HandleFunc("/user", handlers.CreateUser(db)).Methods(http.MethodPost)
+func User(r *mux.Router, userDb models.UsersRepository, roomDb models.RoomsRepository) {
+	r.HandleFunc("/user", handlers.CreateUser(userDb)).Methods(http.MethodPost)
+	r.HandleFunc("/user/{id}/rooms", handlers.UserRooms(roomDb)).Methods(http.MethodGet)
 }

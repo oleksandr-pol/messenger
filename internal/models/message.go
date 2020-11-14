@@ -51,7 +51,7 @@ func (db *messageDB) CreateMessage(m Message) (int, error) {
 	INSERT INTO message (user_id, room_id, message)
 	VALUES ($1, $2, $3)
 	RETURNING message_id`
-
+	// use exec
 	row := db.QueryRow(sqlInsert, m.UserId, m.RoomId, m.Message)
 	err := row.Scan(&id)
 

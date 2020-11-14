@@ -6,6 +6,7 @@ import (
 
 type RoomsRepository interface {
 	AllRooms() ([]*Room, error)
+	UserRooms(int) ([]*Room, error)
 	CreateRoom(Room) (int, error)
 	RoomById(int) (*Room, error)
 	UpdateRoom(Room) error
@@ -28,20 +29,7 @@ func (db *RoomDB) AllRooms() ([]*Room, error) {
 		return nil, err
 	}
 	defer rows.Close()
-
-	rooms := make([]*Room, 0)
-	for rows.Next() {
-		room := new(Room)
-		err := rows.Scan(&room.Id, &room.Name, &room.IsPrivate)
-		if err != nil {
-			return nil, err
-		}
-		rooms = append(rooms, room)
-	}
-	if err = rows.Err(); err != nil {
-		return nil, err
-	}
-	return rooms, nil
+	return scanRoomsRows(rows)
 }
 
 func (db *RoomDB) CreateRoom(r Room) (int, error) {
@@ -90,4 +78,42 @@ func (db *RoomDB) DeleteRoom(id int) error {
 	_, err := db.Exec("DELETE FROM room WHERE id=$1", id)
 
 	return err
+}
+
+func (db *RoomDB) UserRooms(id int) ([]*Room, error) {
+	query := `
+		select
+			r.*
+		from
+			participant p
+		inner join users u on
+			p.user_id = u.user_id
+		inner join room r on
+			r.room_id = p.room_id
+		where
+			p.user_id = $1;
+	`
+	rows, err := db.Query(query, id)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+
+	return scanRoomsRows(rows)
+}
+
+func scanRoomsRows(rows *sql.Rows) ([]*Room, error) {
+	rooms := make([]*Room, 0)
+	for rows.Next() {
+		room := new(Room)
+		err := rows.Scan(&room.Id, &room.Name, &room.IsPrivate)
+		if err != nil {
+			return nil, err
+		}
+		rooms = append(rooms, room)
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return rooms, nil
 }
