@@ -8,18 +8,18 @@ import (
 	"github.com/oleksandr-pol/simple-go-service/pkg/utils"
 )
 
-func CreateRoom(db models.RoomsRepository) http.HandlerFunc {
+func NewParticipant(db models.ParticipantRepository) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		var room models.Room
+		var p models.Participant
 
 		decoder := json.NewDecoder(r.Body)
-		if err := decoder.Decode(&room); err != nil {
+		if err := decoder.Decode(&p); err != nil {
 			utils.RespondWithError(w, http.StatusBadRequest, "Invalid request payload")
 			return
 		}
 		defer r.Body.Close()
 
-		id, err := db.CreateRoom(room)
+		id, err := db.AddParticipant(p)
 		if err != nil {
 			utils.RespondWithError(w, http.StatusInternalServerError, err.Error())
 			return

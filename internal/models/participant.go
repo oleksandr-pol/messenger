@@ -7,7 +7,7 @@ type ParticipantRepository interface {
 	DeleteParticipant(int) error
 }
 
-type participantDB struct {
+type ParticipantDB struct {
 	*sql.DB
 }
 
@@ -17,7 +17,7 @@ type Participant struct {
 	RoomId int `json:"room_id"`
 }
 
-func (db *participantDB) AddParticipant(p Participant) (int, error) {
+func (db *ParticipantDB) AddParticipant(p Participant) (int, error) {
 	var id int
 
 	sqlInsert := `
@@ -35,7 +35,7 @@ func (db *participantDB) AddParticipant(p Participant) (int, error) {
 	return id, nil
 }
 
-func (db *participantDB) DeleteParticipant(id int) error {
+func (db *ParticipantDB) DeleteParticipant(id int) error {
 	_, err := db.Exec("DELETE FROM participant WHERE id=$1", id)
 
 	return err

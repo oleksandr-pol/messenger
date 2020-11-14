@@ -26,10 +26,12 @@ func main() {
 	flag.StringVar(&dbPass, "dbPass", utils.GetDefaultStringVal(os.Getenv("DB_PASS"), "empty"), "no default value")
 	flag.Parse()
 	dbConf := env.DbConfig{DbHostName: dbHost, DbHostPort: dbPort, DbUserName: dbUserName, DbPassword: dbPass, DbName: dbName}
+
 	db, err := env.NewDbCon(dbConf)
 	if err != nil {
 		fmt.Println(err.Error())
 	}
+	defer db.Close()
 
 	router, setUpErr := env.SetUpServer(db)
 	if setUpErr != nil {

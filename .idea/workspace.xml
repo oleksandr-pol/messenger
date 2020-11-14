@@ -1,10 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="bb0ac6df-840d-4c13-a78d-01db3126858a" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/internal/env/setup.go" beforeDir="false" afterPath="$PROJECT_DIR$/internal/env/setup.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/internal/models/room.go" beforeDir="false" afterPath="$PROJECT_DIR$/internal/models/room.go" afterDir="false" />
-    </list>
+    <list default="true" id="bb0ac6df-840d-4c13-a78d-01db3126858a" name="Default Changelist" comment="" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
