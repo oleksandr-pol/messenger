@@ -10,4 +10,5 @@ import (
 
 func Message(r *mux.Router, db models.MessageRepository) {
 	r.HandleFunc("/message", handlers.NewMessage(db)).Methods(http.MethodPost)
+	r.HandleFunc("/message", handlers.RoomMessages(db)).Queries("roomId", "{roomId}").Methods(http.MethodGet)
 }

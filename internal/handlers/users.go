@@ -51,6 +51,6 @@ func UserRooms(db models.RoomsRepository) http.HandlerFunc {
 			}
 		}
 
-		utils.RespondWithJSON(w, http.StatusCreated, rooms)
+		utils.RespondWithJSON(w, http.StatusOK, rooms)
 	}
 }

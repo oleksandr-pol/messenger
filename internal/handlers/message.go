@@ -1,8 +1,10 @@
 package handlers
 
 import (
+	"database/sql"
 	"encoding/json"
 	"net/http"
+	"strconv"
 
 	"github.com/oleksandr-pol/messenger/internal/models"
 	"github.com/oleksandr-pol/simple-go-service/pkg/utils"
@@ -26,5 +28,28 @@ func NewMessage(db models.MessageRepository) http.HandlerFunc {
 		}
 
 		utils.RespondWithJSON(w, http.StatusCreated, id)
+	}
+}
+
+func RoomMessages(db models.MessageRepository) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		id := r.FormValue("roomId")
+		roomId, err := strconv.Atoi(id)
+		if err != nil {
+			utils.RespondWithError(w, http.StatusBadRequest, "Invalid room ID")
+			return
+		}
+
+		messages, err := db.RoomMessages(roomId)
+		if err != nil {
+			switch err {
+			case sql.ErrNoRows:
+				utils.RespondWithError(w, http.StatusNotFound, "messages not found")
+			default:
+				utils.RespondWithError(w, http.StatusInternalServerError, err.Error())
+			}
+		}
+
+		utils.RespondWithJSON(w, http.StatusOK, messages)
 	}
 }
