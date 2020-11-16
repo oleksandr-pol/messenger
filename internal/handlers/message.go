@@ -6,6 +6,7 @@ import (
 	"net/http"
 	"strconv"
 
+	"github.com/gorilla/mux"
 	"github.com/oleksandr-pol/messenger/internal/models"
 	"github.com/oleksandr-pol/simple-go-service/pkg/utils"
 )
@@ -41,6 +42,36 @@ func RoomMessages(db models.MessageRepository) http.HandlerFunc {
 		}
 
 		messages, err := db.RoomMessages(roomId)
+		if err != nil {
+			switch err {
+			case sql.ErrNoRows:
+				utils.RespondWithError(w, http.StatusNotFound, "messages not found")
+			default:
+				utils.RespondWithError(w, http.StatusInternalServerError, err.Error())
+			}
+		}
+
+		utils.RespondWithJSON(w, http.StatusOK, messages)
+	}
+}
+
+func RoomMessagesAfterMessage(db models.MessageRepository) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		rId := r.FormValue("roomId")
+		roomId, err := strconv.Atoi(rId)
+		if err != nil {
+			utils.RespondWithError(w, http.StatusBadRequest, "Invalid room ID")
+			return
+		}
+
+		vars := mux.Vars(r)
+		msgId, err := strconv.Atoi(vars["id"])
+		if err != nil {
+			utils.RespondWithError(w, http.StatusBadRequest, "Invalid message ID")
+			return
+		}
+
+		messages, err := db.RoomMessagesAfter(roomId, msgId)
 		if err != nil {
 			switch err {
 			case sql.ErrNoRows:

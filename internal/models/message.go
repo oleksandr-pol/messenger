@@ -10,6 +10,7 @@ type MessageRepository interface {
 	UpdateMessage(Message) error
 	DeleteMessage(int) error
 	RoomMessages(roomId int) ([]*Message, error)
+	RoomMessagesAfter(roomId int, messageId int) ([]*Message, error)
 }
 
 type Message struct {
@@ -41,7 +42,7 @@ func (db *MessageDB) CreateMessage(m Message) (int, error) {
 	INSERT INTO message (user_id, room_id, message)
 	VALUES ($1, $2, $3)
 	RETURNING message_id`
-	// use exec
+	// use exec?
 	row := db.QueryRow(sqlInsert, m.UserId, m.RoomId, m.Message)
 	err := row.Scan(&id)
 
@@ -79,9 +80,31 @@ func (db *MessageDB) RoomMessages(roomId int) ([]*Message, error) {
 		inner join message m on
 			m.room_id = r.room_id
 		where
-			r.room_id = $1;
+			r.room_id = $1
 	`
 	rows, err := db.Query(query, roomId)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+
+	return scanMessagesRows(rows)
+}
+
+func (db *MessageDB) RoomMessagesAfter(roomId int, messageId int) ([]*Message, error) {
+	query := `
+		select
+			m.*
+		from
+			room r
+		inner join users u on
+			u.user_id = r.room_id
+		inner join message m on
+			m.room_id = r.room_id
+		where
+			r.room_id = $1 and m.message_id > $2
+	`
+	rows, err := db.Query(query, roomId, messageId)
 	if err != nil {
 		return nil, err
 	}

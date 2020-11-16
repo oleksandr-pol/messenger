@@ -20,7 +20,7 @@ func main() {
 
 	flag.IntVar(&port, "p", utils.GetDefaultIntVal(os.Getenv("PORT"), 8000), "specify port to use.  defaults to 8000")
 	flag.IntVar(&dbPort, "dbPort", utils.GetDefaultIntVal(os.Getenv("DB_PORT"), 5432), "specify data base host name. defaults to 5432")
-	flag.StringVar(&dbName, "dbName", utils.GetDefaultStringVal(os.Getenv("DB_NAME"), "messenger"), "specify data base name. defaults to mentorship")
+	flag.StringVar(&dbName, "dbName", utils.GetDefaultStringVal(os.Getenv("DB_NAME"), "messenger"), "specify data base name. defaults to messenger")
 	flag.StringVar(&dbHost, "dbHost", utils.GetDefaultStringVal(os.Getenv("DB_HOST"), "localhost"), "specify data base host name. defaults to localhost")
 	flag.StringVar(&dbUserName, "dbUserName", utils.GetDefaultStringVal(os.Getenv("DB_USER_NAME"), "oleksandr"), "specify data base host name. defaults to oleksandr")
 	flag.StringVar(&dbPass, "dbPass", utils.GetDefaultStringVal(os.Getenv("DB_PASS"), "empty"), "no default value")
