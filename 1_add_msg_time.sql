@@ -1,1 +1,1 @@
-alter table message add column created_at TIMESTAMP;
+alter table message add column created_at TIMESTAMP default current_timestamp;

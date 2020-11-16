@@ -18,11 +18,11 @@ type Message struct {
 	Message string `json:"message"`
 }
 
-type messageDB struct {
+type MessageDB struct {
 	*sql.DB
 }
 
-func (db *messageDB) AllMessages() ([]*Message, error) {
+func (db *MessageDB) AllMessages() ([]*Message, error) {
 	rows, err := db.Query("select message_id, user_id, room_id, message from message")
 	if err != nil {
 		return nil, err
@@ -44,7 +44,7 @@ func (db *messageDB) AllMessages() ([]*Message, error) {
 	return messages, nil
 }
 
-func (db *messageDB) CreateMessage(m Message) (int, error) {
+func (db *MessageDB) CreateMessage(m Message) (int, error) {
 	var id int
 
 	sqlInsert := `
@@ -62,7 +62,7 @@ func (db *messageDB) CreateMessage(m Message) (int, error) {
 	return id, nil
 }
 
-func (db *messageDB) UpdateMessage(m Message) error {
+func (db *MessageDB) UpdateMessage(m Message) error {
 	sqlUpdate := `UPDATE room SET message=$1 WHERE id=$2`
 
 	_, err :=
@@ -72,7 +72,7 @@ func (db *messageDB) UpdateMessage(m Message) error {
 	return err
 }
 
-func (db *messageDB) DeleteMessage(id int) error {
+func (db *MessageDB) DeleteMessage(id int) error {
 	_, err := db.Exec("DELETE FROM message WHERE id=$1", id)
 
 	return err
